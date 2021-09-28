@@ -24,16 +24,16 @@ public class LocationRepositoryImpl implements LocationRepository {
     /**
      *Create a location in database if it doesn't exist.
      *
-     * @param location name of location to create
+     * @param locationName name of location to create
      * @return true if cell was created and false if not
      */
     @Override
-    public boolean createIfNotExist(String location) {
-        logger.debug("Creating cell with name {}", location);
+    public boolean createIfNotExist(String locationName) {
+        logger.debug("Creating cell with name {}", locationName);
         try (Connection connection = DbUtil.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      "INSERT INTO Location (name) VALUES (?) ON CONFLICT DO NOTHING ")) {
-            preparedStatement.setString(1, location);
+            preparedStatement.setString(1, locationName);
             return preparedStatement.execute();
         } catch (SQLException sqlException) {
             logger.error("An error occurred", sqlException);

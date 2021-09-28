@@ -1,5 +1,6 @@
 package com.metagxd.solvotest.util;
 
+import com.metagxd.solvotest.exception.DBException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +19,10 @@ public class DbUtil {
 
     /**
      * Initialize DB at startup of app, do nothing if table already exist.
+     *
+     * @throws SQLException when can't execute query
      */
-    public static void initDb() {
+    public static void initDb() throws SQLException {
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS Location\n" +
@@ -42,6 +45,7 @@ public class DbUtil {
                     "    ON Loads (name);");
         } catch (SQLException sqlException) {
             logger.error("An error occurred", sqlException);
+            throw new DBException("Can't init database ", sqlException);
         }
     }
 

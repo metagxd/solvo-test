@@ -5,9 +5,9 @@ import com.metagxd.solvotest.model.Location;
 import java.util.List;
 
 public interface LocationRepository {
-    boolean createIfNotExist(String cellName);
+    boolean createIfNotExist(String locationName);
 
-    int countLoads(String cellName);
+    int countLoads(String locationName);
 
     List<Location> getAllWithLoads();
 }

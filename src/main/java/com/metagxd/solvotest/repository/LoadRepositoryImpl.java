@@ -14,31 +14,27 @@ public class LoadRepositoryImpl implements LoadRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(LoadRepositoryImpl.class);
 
-    private final LocationRepository locationRepository = new LocationRepositoryImpl();
-
     /**
+     * Create loads with random name if generated name already exist in database lods won't be created.
      *
-     * @param quantity quantity of loads to create
-     * @param cellName name of cell where load will store
+     * @param quantity     quantity of loads to create
+     * @param locationName name of cell where load will store
      * @return number of created rows in database
      */
     @Override
-    public int create(int quantity, String cellName) {
-        logger.debug("Creating {} loads in cell {}", quantity, cellName);
+    public int create(int quantity, String locationName) {
+        logger.debug("Creating {} loads in cell {}", quantity, locationName);
 
         try (Connection connection = DbUtil.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO Loads (name, Loc_id) VALUES (?, (SELECT id FROM Location WHERE name = ?))"
+                     "INSERT INTO Loads (name, Loc_id) VALUES (?, (SELECT id FROM Location WHERE name = ?)) " +
+                             "ON CONFLICT DO NOTHING"
              )) {
-
-            if (locationRepository.createIfNotExist(cellName)) {
-                logger.info("Cell {} created", cellName);
-            }
 
             for (int i = 0; i < quantity; i++) {
                 Load load = new Load();
                 preparedStatement.setString(1, load.getName());
-                preparedStatement.setString(2, cellName);
+                preparedStatement.setString(2, locationName);
                 preparedStatement.addBatch();
             }
 

@@ -22,7 +22,7 @@ public class LocationXMLTransfer implements DataTransfer<Location> {
      * @param objects list of location that need to transfer at file
      */
     @Override
-    public void saveToFile(String fileName, List<Location> objects) {
+    public void saveToFile(String fileName, List<Location> objects) throws JAXBException {
         //wrapper for 'dbinfo' tag
         XMLWrapper xmlWrapper = new XMLWrapper(objects);
         try {
@@ -33,6 +33,7 @@ public class LocationXMLTransfer implements DataTransfer<Location> {
             logger.info("Transfer complete to {}", fileName);
         } catch (JAXBException e) {
             logger.error("An error occurred", e);
+            throw e;
         }
     }
 }
