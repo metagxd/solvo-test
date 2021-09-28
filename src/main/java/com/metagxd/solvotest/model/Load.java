@@ -41,4 +41,11 @@ public class Load extends BaseEntity {
     public int hashCode() {
         return Objects.hash(super.hashCode(), name);
     }
+
+    @Override
+    public String toString() {
+        return "Load{" +
+                "name='" + name + '\'' +
+                "} " + super.toString();
+    }
 }

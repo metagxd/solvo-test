@@ -7,10 +7,10 @@ public abstract class BaseEntity {
 
     private int id;
 
-    public BaseEntity() {
+    protected BaseEntity() {
     }
 
-    public BaseEntity(int id) {
+    protected BaseEntity(int id) {
         this.id = id;
     }
 
@@ -34,5 +34,12 @@ public abstract class BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "BaseEntity{" +
+                "id=" + id +
+                '}';
     }
 }

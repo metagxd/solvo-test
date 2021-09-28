@@ -1,9 +1,9 @@
 package com.metagxd.solvotest.model;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,9 +15,6 @@ public class Location extends BaseEntity {
         super();
     }
 
-/*    @NotBlank
-    @Size(max = 32, message = "length of name must be between 1 and 32 symbols!")
-    @Pattern(regexp = "[A-Za-z0-9]")*/
     private String name;
 
     private List<Load> loadList = new ArrayList<>();
@@ -62,5 +59,13 @@ public class Location extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), name);
+    }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "name='" + name + '\'' +
+                ", loadList=" + loadList +
+                "} " + super.toString();
     }
 }
