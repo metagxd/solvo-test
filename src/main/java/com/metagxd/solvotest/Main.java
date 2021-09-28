@@ -36,42 +36,40 @@ public class Main {
         LocationRepository locationRepository = new LocationRepositoryImpl();
 
         while (action != Action.EXIT) {
-            System.out.println("Enter number of action and press enter \n" + actions);
+            logger.info("Enter number of action and press enter \n {}", actions);
             int userInput = ScannerUtil.scanInt(scanner);
-            action = actions.getOrDefault(userInput, Action.EXIT);
+            action = actions.getOrDefault(userInput, Action.NONE);
             switch (action) {
                 case EXIT:
                     break;
                 case CREATE_LOADS:
                     LoadRepository loadRepository = new LoadRepositoryImpl();
                     logger.info("Enter quantity of loads for creation:");
-                    int numOfLoads = scanner.nextInt();
+                    int numOfLoads = ScannerUtil.scanInt(scanner);
                     logger.info("Enter name of cell:");
-                    String nameOfCell = scanner.next();
+                    String nameOfCell = ScannerUtil.getValidString(scanner);
                     int numberOfCreated = loadRepository.create(numOfLoads, nameOfCell);
                     logger.info("{} loads created.", numberOfCreated);
                     action = Action.NONE;
                     break;
                 case GET_INFO:
                     logger.info("Enter cell names [',' as separator]");
-                    String rawCellNames = scanner.next();
+                    String rawCellNames = ScannerUtil.getValidCellNames(scanner);
                     String[] cellNames;
                     if (rawCellNames.contains(",")) {
                         cellNames = rawCellNames.split(",");
-                    } else if (rawCellNames.contains(" ")) {
-                        cellNames = rawCellNames.split(" ");
                     } else {
                         cellNames = new String[]{rawCellNames};
                     }
-                    for (int i = 0; i < cellNames.length; i++) {
-                        String cellName = cellNames[i].trim();
+                    for (String name : cellNames) {
+                        String cellName = name.trim();
                         int numOfLoadsInCell = locationRepository.countLoads(cellName);
                         System.out.println("| " + cellName + " | " + numOfLoadsInCell + " loads |");
                     }
                     break;
                 case EXPORT:
                     logger.info("Input xml file name to transfer data");
-                    String file = scanner.next();
+                    String file = ScannerUtil.getValidFileName(scanner);
                     DataTransfer<Location> transfer = new LocationXMLTransfer();
                     transfer.saveToFile(file, locationRepository.getAllWithLoads());
                     break;
