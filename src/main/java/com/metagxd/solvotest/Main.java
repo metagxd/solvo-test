@@ -7,6 +7,7 @@ import com.metagxd.solvotest.repository.LocationRepository;
 import com.metagxd.solvotest.repository.LocationRepositoryImpl;
 import com.metagxd.solvotest.transfer.DataTransfer;
 import com.metagxd.solvotest.transfer.LocationXMLTransfer;
+import com.metagxd.solvotest.util.DbUtil;
 import com.metagxd.solvotest.util.ScannerUtil;
 import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
@@ -19,11 +20,12 @@ import java.util.Scanner;
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
-    private static Map<Integer, Action> actions = new HashMap<>();
+    private static final Map<Integer, Action> actions = new HashMap<>();
 
     static {
         String log4jConfPath = "src/main/resources/loger.properties";
         PropertyConfigurator.configure(log4jConfPath);
+        DbUtil.initDb();
         for (Action action : Action.values()) {
             actions.put(action.getValue(), action);
         }
@@ -45,7 +47,7 @@ public class Main {
                     int numOfLoads = scanner.nextInt();
                     logger.info("Enter name of cell:");
                     String nameOfCell = scanner.next();
-                    int numberOfCreated = loadRepository.createMany(numOfLoads, nameOfCell);
+                    int numberOfCreated = loadRepository.create(numOfLoads, nameOfCell);
                     logger.info("{} loads created.", numberOfCreated);
                     action = Action.DEFAULT;
                     break;

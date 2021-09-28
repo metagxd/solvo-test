@@ -1,9 +1,7 @@
 package com.metagxd.solvotest.repository;
 
-import com.metagxd.solvotest.db.ConnectionFactory;
-import com.metagxd.solvotest.db.SQLiteConnectionFactory;
 import com.metagxd.solvotest.model.Load;
-import com.metagxd.solvotest.model.Location;
+import com.metagxd.solvotest.util.DbUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,24 +14,25 @@ public class LoadRepositoryImpl implements LoadRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(LoadRepositoryImpl.class);
 
-    private final ConnectionFactory connectionFactory = new SQLiteConnectionFactory();
     private final LocationRepository locationRepository = new LocationRepositoryImpl();
 
     @Override
     public int create(int quantity, String cellName) {
         logger.debug("Creating {} loads in cell {}", quantity, cellName);
 
-        try (Connection connection = connectionFactory.getConnection();
+        try (Connection connection = DbUtil.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     "INSERT INTO Loads (name, Loc_id) VALUES (?, ?)"
+                     "INSERT INTO Loads (name, Loc_id) VALUES (?, (SELECT id FROM Location WHERE name = ?))"
              )) {
 
-            Location location = locationRepository.createIfNotExist(cellName);
+            if (locationRepository.createIfNotExist(cellName)) {
+                logger.info("Cell {} created", cellName);
+            }
 
             for (int i = 0; i < quantity; i++) {
                 Load load = new Load();
                 preparedStatement.setString(1, load.getName());
-                preparedStatement.setInt(2, location.getId());
+                preparedStatement.setString(2, cellName);
                 preparedStatement.addBatch();
             }
 
