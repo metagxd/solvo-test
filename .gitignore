@@ -1,3 +1,4 @@
 /.idea/
 /target/
 test.db
+/src/main/resources/META-INF/
