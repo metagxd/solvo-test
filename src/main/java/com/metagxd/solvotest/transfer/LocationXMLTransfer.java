@@ -15,10 +15,16 @@ public class LocationXMLTransfer implements DataTransfer<Location> {
 
     private static final Logger logger = LoggerFactory.getLogger(LocationXMLTransfer.class);
 
+    /**
+     * Transfer data from database to xml file.
+     *
+     * @param fileName name of file that will be created or rewritten for store data
+     * @param objects list of location that need to transfer at file
+     */
     @Override
-    public void saveToFile(String fileName, List<Location> objectsList) {
+    public void saveToFile(String fileName, List<Location> objects) {
         //wrapper for 'dbinfo' tag
-        XMLWrapper xmlWrapper = new XMLWrapper(objectsList);
+        XMLWrapper xmlWrapper = new XMLWrapper(objects);
         try {
             JAXBContext context = JAXBContext.newInstance(XMLWrapper.class);
             Marshaller marshaller = context.createMarshaller();

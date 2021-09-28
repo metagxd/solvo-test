@@ -16,7 +16,9 @@ public class DbUtil {
     private static final Logger logger = LoggerFactory.getLogger(DbUtil.class);
     private static final String JDBC_URL = "jdbc:sqlite:test.db";
 
-
+    /**
+     * Initialize DB at startup of app, do nothing if table already exist.
+     */
     public static void initDb() {
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement()) {
@@ -43,6 +45,12 @@ public class DbUtil {
         }
     }
 
+    /**
+     * Attempts to establish a connection to the database.
+     *
+     * @return Connection to database.
+     * @throws SQLException when can't create connection for any reason.
+     */
     public static Connection getConnection() throws SQLException {
         try {
             return DriverManager.getConnection(JDBC_URL);

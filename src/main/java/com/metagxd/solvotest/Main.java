@@ -10,8 +10,6 @@ import com.metagxd.solvotest.transfer.LocationXMLTransfer;
 import com.metagxd.solvotest.util.DbUtil;
 import com.metagxd.solvotest.util.ScannerUtil;
 import org.apache.log4j.PropertyConfigurator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +17,6 @@ import java.util.Scanner;
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
-    private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static final Map<Integer, Action> actions = new HashMap<>();
 
     static {
@@ -35,7 +32,7 @@ public class Main {
         LocationRepository locationRepository = new LocationRepositoryImpl();
 
         while (action != Action.EXIT) {
-            logger.info("Enter number of action and press enter \n {}", actions);
+            System.out.println("Enter number of action and press enter \n" + actions);
             int userInput = ScannerUtil.scanInt(scanner);
             action = actions.getOrDefault(userInput, Action.NONE);
             switch (action) {
@@ -43,16 +40,16 @@ public class Main {
                     break;
                 case CREATE_LOADS:
                     LoadRepository loadRepository = new LoadRepositoryImpl();
-                    logger.info("Enter quantity of loads for creation:");
+                    System.out.println("Enter quantity of loads for creation:");
                     int numOfLoads = ScannerUtil.scanInt(scanner);
-                    logger.info("Enter name of cell:");
+                    System.out.println("Enter name of cell:");
                     String nameOfCell = ScannerUtil.getValidString(scanner);
                     int numberOfCreated = loadRepository.create(numOfLoads, nameOfCell);
-                    logger.info("{} loads created.", numberOfCreated);
+                    System.out.println(numberOfCreated + " loads created.");
                     action = Action.NONE;
                     break;
                 case GET_INFO:
-                    logger.info("Enter cell names [',' as separator]");
+                    System.out.println("Enter cell names [',' as separator]");
                     String rawCellNames = ScannerUtil.getValidCellNames(scanner);
                     String[] cellNames;
                     if (rawCellNames.contains(",")) {
@@ -67,7 +64,7 @@ public class Main {
                     }
                     break;
                 case EXPORT:
-                    logger.info("Input xml file name to transfer data");
+                    System.out.println("Enter xml file name to transfer data");
                     String file = ScannerUtil.getValidFileName(scanner);
                     DataTransfer<Location> transfer = new LocationXMLTransfer();
                     transfer.saveToFile(file, locationRepository.getAllWithLoads());

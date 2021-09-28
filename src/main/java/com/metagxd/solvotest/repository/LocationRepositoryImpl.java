@@ -13,13 +13,19 @@ public class LocationRepositoryImpl implements LocationRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(LocationRepositoryImpl.class);
 
+    /**
+     *Create a location in database if it doesn't exist.
+     *
+     * @param location name of location to create
+     * @return true if cell was created and false if not
+     */
     @Override
-    public boolean createIfNotExist(String cellName) {
-        logger.debug("Creating cell with name {}", cellName);
+    public boolean createIfNotExist(String location) {
+        logger.debug("Creating cell with name {}", location);
         try (Connection connection = DbUtil.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      "INSERT INTO Location (name) VALUES (?) ON CONFLICT DO NOTHING ")) {
-            preparedStatement.setString(1, cellName);
+            preparedStatement.setString(1, location);
             return preparedStatement.execute();
         } catch (SQLException sqlException) {
             logger.error("An error occurred", sqlException);
@@ -27,6 +33,12 @@ public class LocationRepositoryImpl implements LocationRepository {
         return false;
     }
 
+    /**
+     * Counting loads in database that refer to locationName.
+     *
+     * @param locationName name of location
+     * @return number of loads for location
+     */
     public int countLoads(String locationName) {
         logger.debug("Counting loads in cell {}", locationName);
         try (Connection connection = DbUtil.getConnection();
@@ -43,6 +55,11 @@ public class LocationRepositoryImpl implements LocationRepository {
         return 0;
     }
 
+    /**
+     * Get all locations with their loads
+     *
+     * @return list of location
+     */
     public List<Location> getAllWithLoads() {
         logger.debug("Getting all locations.");
         Map<Location, List<Load>> locationLoadMap = new HashMap<>();
@@ -67,7 +84,7 @@ public class LocationRepositoryImpl implements LocationRepository {
             logger.error("An error occurred", sqlException);
         }
         //merge Locations with load list
-        locationLoadMap.forEach(Location::setLoadList);
+        locationLoadMap.forEach(Location::setLoads);
         return new ArrayList<>(locationLoadMap.keySet());
     }
 }

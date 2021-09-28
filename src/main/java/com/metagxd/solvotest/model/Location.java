@@ -17,7 +17,7 @@ public class Location extends BaseEntity {
 
     private String name;
 
-    private List<Load> loadList = new ArrayList<>();
+    private List<Load> loads = new ArrayList<>();
 
     public Location(String name) {
         super(0);
@@ -25,12 +25,12 @@ public class Location extends BaseEntity {
     }
 
     @XmlElement(name = "load")
-    public List<Load> getLoadList() {
-        return loadList;
+    public List<Load> getLoads() {
+        return loads;
     }
 
-    public void setLoadList(List<Load> loadList) {
-        this.loadList = loadList;
+    public void setLoads(List<Load> loads) {
+        this.loads = loads;
     }
 
     @XmlAttribute
@@ -65,7 +65,7 @@ public class Location extends BaseEntity {
     public String toString() {
         return "Location{" +
                 "name='" + name + '\'' +
-                ", loadList=" + loadList +
+                ", loadList=" + loads +
                 "} " + super.toString();
     }
 }

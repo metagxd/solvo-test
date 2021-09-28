@@ -16,6 +16,12 @@ public class LoadRepositoryImpl implements LoadRepository {
 
     private final LocationRepository locationRepository = new LocationRepositoryImpl();
 
+    /**
+     *
+     * @param quantity quantity of loads to create
+     * @param cellName name of cell where load will store
+     * @return number of created rows in database
+     */
     @Override
     public int create(int quantity, String cellName) {
         logger.debug("Creating {} loads in cell {}", quantity, cellName);

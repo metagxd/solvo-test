@@ -1,48 +1,67 @@
 package com.metagxd.solvotest.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Scanner;
 
+/**
+ * This util class with metod for validating input from {@link Scanner}
+ */
 public class ScannerUtil {
 
     private ScannerUtil() {
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(ScannerUtil.class);
-
+    /**
+     * Validate input from {@link Scanner} for int
+     * @param scanner scanner that will be use for {@link java.util.Scanner#nextInt}
+     * @return scanned int
+     */
     public static int scanInt(Scanner scanner) {
-        logger.info("Enter int:");
+        System.out.println("Enter int:");
         while (!scanner.hasNextInt()) {
-            logger.error("That's not an int!");
+            System.out.println("That's not an int!");
             scanner.next();
         }
         return scanner.nextInt();
     }
 
+    /**
+     * Validate input from {@link Scanner} for {@link String}
+     * @param scanner scanner that will be use for {@link java.util.Scanner#next(String pattern)}
+     * @return scanned {@link String}
+     */
     public static String getValidString(Scanner scanner) {
-        logger.info("Enter string length 1-32 symbols:");
+        System.out.println("Enter string length 1-32 symbols:");
         while (!scanner.hasNext("[a-zA-Z0-9_]{1,32}")) {
-            logger.error("That's not a string!");
+            System.out.println("That's not a string!");
             scanner.next();
         }
         return scanner.next();
     }
 
+    /**
+     * Validate input from {@link Scanner} for getting {@link com.metagxd.solvotest.model.Location} names
+     * @param scanner scanner that will be use for {@link java.util.Scanner#next(String pattern)}
+     * @return raw {@link String} that contains words split by ','
+     */
     public static String getValidCellNames(Scanner scanner) {
-        logger.info("Enter names split by ',':");
+        System.out.println("Enter names split by ',':");
         while (!scanner.hasNext("[a-zA-Z0-9_,]{1,32}")) {
-            logger.error("Incorrect input!");
+            System.out.println("Incorrect input!");
             scanner.next();
         }
         return scanner.next();
     }
 
+    /**
+     * Validate input from {@link Scanner} and return string that contain .xml
+     *
+     * @param scanner {@link Scanner} that will be use for {@link java.util.Scanner#next(String pattern)}
+     * @return {@link String} that contain '.xml'
+     */
     public static String getValidFileName(Scanner scanner) {
-        logger.info("Enter filename:");
+        System.out.println("Enter filename:");
         while (!scanner.hasNext(".*\\.(xml)$")) {
-            logger.error("Incorrect input!");
+            System.out.println("Incorrect input!");
             scanner.next();
         }
         return scanner.next();
