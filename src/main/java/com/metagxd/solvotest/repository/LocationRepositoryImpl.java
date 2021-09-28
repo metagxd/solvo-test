@@ -4,66 +4,50 @@ import com.metagxd.solvotest.db.ConnectionFactory;
 import com.metagxd.solvotest.db.SQLiteConnectionFactory;
 import com.metagxd.solvotest.model.Load;
 import com.metagxd.solvotest.model.Location;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.*;
 
 public class LocationRepositoryImpl implements LocationRepository {
 
-    private final ConnectionFactory connectionFactory = new SQLiteConnectionFactory();
+    private static final Logger logger = LoggerFactory.getLogger(LocationRepositoryImpl.class);
+    private static final ConnectionFactory connectionFactory = new SQLiteConnectionFactory();
 
     @Override
-    public Location createIfNotExist(String cellName) {
+    public boolean createIfNotExist(String cellName) {
+        logger.debug("Creating cell with name {}", cellName);
         try (Connection connection = connectionFactory.getConnection();
-             final PreparedStatement preparedStatement = connection.prepareStatement(
+             PreparedStatement preparedStatement = connection.prepareStatement(
                      "INSERT INTO Location (name) VALUES (?) ON CONFLICT DO NOTHING ")) {
             preparedStatement.setString(1, cellName);
-            if (preparedStatement.execute()) {
-                int id = preparedStatement.getGeneratedKeys().getInt(1);
-                return new Location(id, cellName);
-            }
-            final PreparedStatement preparedStatement1 = connection.prepareStatement("SELECT id FROM Location WHERE name = ?");
-            preparedStatement1.setString(1, cellName);
-            final ResultSet resultSet = preparedStatement1.executeQuery();
-            int id = resultSet.getInt(1);
-            return new Location(id, cellName);
+            return preparedStatement.execute();
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            logger.error("An error occurred", sqlException);
         }
-        return null;
+        return false;
     }
 
     public int countLoads(String locationName) {
+        logger.debug("Counting loads in cell {}", locationName);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      "SELECT count(ld.id) FROM Location loc LEFT JOIN Loads ld " +
                              "ON loc.id = ld.Loc_id WHERE loc.name = (?)")) {
             preparedStatement.setString(1, locationName);
-            return preparedStatement.executeQuery().getInt(1);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.getInt(1);
+            }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            logger.error("An error occurred", sqlException);
         }
         return 0;
     }
 
-    public List<Location> getAll() {
-        List<Location> locationList = new ArrayList<>();
-        try (Connection connection = connectionFactory.getConnection();
-             Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM Location");
-            while (resultSet.next()) {
-                locationList.add(new Location(resultSet.getInt(1), resultSet.getString(2)));
-            }
-            return locationList;
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        }
-        return Collections.emptyList();
-    }
-
     public List<Location> getAllWithLoads() {
+        logger.debug("Getting all locations.");
         Map<Location, List<Load>> locationLoadMap = new HashMap<>();
-
         try (Connection connection = connectionFactory.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT * FROM Location loc LEFT JOIN Loads lod on loc.id = lod.Loc_id")) {
@@ -82,8 +66,9 @@ public class LocationRepositoryImpl implements LocationRepository {
                 }
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            logger.error("An error occurred", sqlException);
         }
+        //merge Locations with load list
         locationLoadMap.forEach(Location::setLoadList);
         return new ArrayList<>(locationLoadMap.keySet());
     }

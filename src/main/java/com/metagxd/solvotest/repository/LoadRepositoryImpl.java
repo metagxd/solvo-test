@@ -14,18 +14,15 @@ import java.util.Arrays;
 
 public class LoadRepositoryImpl implements LoadRepository {
 
+    private static final Logger logger = LoggerFactory.getLogger(LoadRepositoryImpl.class);
+
     private final ConnectionFactory connectionFactory = new SQLiteConnectionFactory();
     private final LocationRepository locationRepository = new LocationRepositoryImpl();
 
-    private static Logger logger = LoggerFactory.getLogger(LoadRepositoryImpl.class);
-
     @Override
-    public Load create() {
-        return null;
-    }
+    public int create(int quantity, String cellName) {
+        logger.debug("Creating {} loads in cell {}", quantity, cellName);
 
-    @Override
-    public int createMany(int quantity, String cellName) {
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      "INSERT INTO Loads (name, Loc_id) VALUES (?, ?)"
@@ -39,10 +36,12 @@ public class LoadRepositoryImpl implements LoadRepository {
                 preparedStatement.setInt(2, location.getId());
                 preparedStatement.addBatch();
             }
+
             int[] ints = preparedStatement.executeBatch();
             return Arrays.stream(ints).sum();
+
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            logger.error("An error occurred ", sqlException);
         }
         return 0;
     }
