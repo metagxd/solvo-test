@@ -23,7 +23,7 @@ public class Main {
     private static final Map<Integer, Action> actions = new HashMap<>();
 
     static {
-        String log4jConfPath = "src/main/resources/loger.properties";
+        String log4jConfPath = "src/main/resources/logger.properties";
         PropertyConfigurator.configure(log4jConfPath);
         DbUtil.initDb();
         for (Action action : Action.values()) {
@@ -32,12 +32,13 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Action action = Action.DEFAULT;
+        Action action = Action.NONE;
         LocationRepository locationRepository = new LocationRepositoryImpl();
 
         while (action != Action.EXIT) {
+            System.out.println("Enter number of action and press enter \n" + actions);
             int userInput = ScannerUtil.scanInt(scanner);
-            action = actions.getOrDefault(userInput, Action.DEFAULT);
+            action = actions.getOrDefault(userInput, Action.EXIT);
             switch (action) {
                 case EXIT:
                     break;
@@ -49,7 +50,7 @@ public class Main {
                     String nameOfCell = scanner.next();
                     int numberOfCreated = loadRepository.create(numOfLoads, nameOfCell);
                     logger.info("{} loads created.", numberOfCreated);
-                    action = Action.DEFAULT;
+                    action = Action.NONE;
                     break;
                 case GET_INFO:
                     logger.info("Enter cell names [',' as separator]");
@@ -62,7 +63,6 @@ public class Main {
                     } else {
                         cellNames = new String[]{rawCellNames};
                     }
-                    System.out.println("| " + "-----------" + " | " + "------------" + " loads |");
                     for (int i = 0; i < cellNames.length; i++) {
                         String cellName = cellNames[i].trim();
                         int numOfLoadsInCell = locationRepository.countLoads(cellName);
@@ -76,7 +76,7 @@ public class Main {
                     transfer.saveToFile(file, locationRepository.getAllWithLoads());
                     break;
                 default:
-                    action = Action.DEFAULT;
+                    action = Action.NONE;
                     break;
             }
         }
@@ -87,8 +87,7 @@ public class Main {
         CREATE_LOADS(1),
         GET_INFO(2),
         EXPORT(3),
-        DEFAULT(4),
-        ;
+        NONE(4);
 
         private final int value;
 
