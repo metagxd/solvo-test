@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
-    private static final Scanner scanner = new Scanner(System.in);
 
     static {
         PropertyConfigurator.configure("logger.properties");
@@ -30,6 +29,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         Action userAction = Action.NONE;
         LocationRepository locationRepository = new LocationRepositoryImpl();
         LoadRepository loadRepository = new LoadRepositoryImpl();
@@ -85,6 +85,7 @@ public class Main {
                     break;
             }
         }
+        scanner.close();
     }
 
     public enum Action {

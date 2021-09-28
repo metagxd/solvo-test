@@ -44,7 +44,7 @@ public class ScannerUtil {
      * @return raw {@link String} that contains words split by ','
      */
     public static String getValidCellNames(Scanner scanner) {
-        System.out.println("Enter names split by ',':");
+        System.out.println("Enter names split by ',' or one name:");
         while (!scanner.hasNext("[a-zA-Z0-9_,]{1,32}")) {
             System.out.println("Incorrect input!");
             scanner.next();
@@ -59,7 +59,7 @@ public class ScannerUtil {
      * @return {@link String} that contain '.xml'
      */
     public static String getValidFileName(Scanner scanner) {
-        System.out.println("Enter filename:");
+        System.out.println("Enter file name:");
         while (!scanner.hasNext(".*\\.(xml)$")) {
             System.out.println("Incorrect input!");
             scanner.next();
