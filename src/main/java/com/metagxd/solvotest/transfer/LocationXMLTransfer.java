@@ -2,6 +2,8 @@ package com.metagxd.solvotest.transfer;
 
 import com.metagxd.solvotest.model.Location;
 import com.metagxd.solvotest.util.XMLWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -11,21 +13,20 @@ import java.util.List;
 
 public class LocationXMLTransfer implements DataTransfer<Location> {
 
-    public LocationXMLTransfer() {
-    }
+    private static final Logger logger = LoggerFactory.getLogger(LocationXMLTransfer.class);
 
     @Override
     public void saveToFile(String fileName, List<Location> objectsList) {
-        JAXBContext context = null;
+        //wrapper for 'dbinfo' tag
         XMLWrapper xmlWrapper = new XMLWrapper(objectsList);
         try {
-            context = JAXBContext.newInstance(XMLWrapper.class);
+            JAXBContext context = JAXBContext.newInstance(XMLWrapper.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
             marshaller.marshal(xmlWrapper, new File(fileName));
+            logger.info("Transfer complete to {}", fileName);
         } catch (JAXBException e) {
-            e.printStackTrace();
+            logger.error("An error occurred", e);
         }
     }
 }
