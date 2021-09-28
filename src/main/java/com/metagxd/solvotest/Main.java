@@ -23,8 +23,7 @@ public class Main {
     private static final Map<Integer, Action> actions = new HashMap<>();
 
     static {
-        String log4jConfPath = "src/main/resources/logger.properties";
-        PropertyConfigurator.configure(log4jConfPath);
+        PropertyConfigurator.configure("logger.properties");
         DbUtil.initDb();
         for (Action action : Action.values()) {
             actions.put(action.getValue(), action);
