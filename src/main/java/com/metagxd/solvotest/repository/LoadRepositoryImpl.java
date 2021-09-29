@@ -15,7 +15,7 @@ public class LoadRepositoryImpl implements LoadRepository {
     private static final Logger logger = LoggerFactory.getLogger(LoadRepositoryImpl.class);
 
     /**
-     * Create loads with random name if generated name already exist in database lods won't be created.
+     * Create loads with random name if generated name already exist in database loads won't be created.
      *
      * @param quantity     quantity of loads to create
      * @param locationName name of cell where load will store
