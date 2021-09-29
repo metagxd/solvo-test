@@ -1,6 +1,7 @@
 package com.metagxd.solvotest;
 
 import com.metagxd.solvotest.exception.DBException;
+import com.metagxd.solvotest.model.Action;
 import com.metagxd.solvotest.model.Location;
 import com.metagxd.solvotest.repository.LoadRepository;
 import com.metagxd.solvotest.repository.LoadRepositoryImpl;
@@ -86,23 +87,5 @@ public class Main {
             }
         }
         scanner.close();
-    }
-
-    public enum Action {
-        EXIT(0),
-        CREATE_LOADS(1),
-        GET_INFO(2),
-        EXPORT(3),
-        NONE(4);
-
-        private final int value;
-
-        Action(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
     }
 }
